@@ -9,22 +9,22 @@ classdef Robot < handle
     methods
         
         %The is a shutdown function to clear the HID hardware connection
-        function  shutdown(packet)
+        function  shutdown(self)
 	    %Close the device
-            packet.myHIDSimplePacketComs.disconnect();
+            self.myHIDSimplePacketComs.disconnect();
         end
         
         % Create a packet processor for an HID device with USB PID 0x007
-        function packet = Robot(dev)
-             packet.myHIDSimplePacketComs=dev; 
-            packet.pol = java.lang.Boolean(false);
+        function self = Robot(dev)
+             self.myHIDSimplePacketComs=dev; 
+            self.pol = java.lang.Boolean(false);
         end
         
         %Perform a command cycle. This function will take in a command ID
         %and a list of 32 bit floating point numbers and pass them over the
         %HID interface to the device, it will take the response and parse
         %them back into a list of 32 bit floating point numbers as well
-        function com = command(packet, idOfCommand, values)
+        function com = command(self, idOfCommand, values)
                 com= zeros(15, 1, 'single');
                 try
                     ds = javaArray('java.lang.Double',length(values));
@@ -33,8 +33,8 @@ classdef Robot < handle
                     end
                     % Default packet size for HID
                     intid = java.lang.Integer(idOfCommand);
-                    packet.myHIDSimplePacketComs.writeFloats(intid,  ds);
-                    ret = 	packet.myHIDSimplePacketComs.readFloats(intid) ;
+                    self.myHIDSimplePacketComs.writeFloats(intid,  ds);
+                    ret = 	self.myHIDSimplePacketComs.readFloats(intid) ;
                     for i=1:length(com)
                        com(i)= ret(i).floatValue();
                     end
@@ -44,13 +44,13 @@ classdef Robot < handle
                 end
         end
         
-        function com = read(packet, idOfCommand)
+        function com = read(self, idOfCommand)
                 com= zeros(15, 1, 'single');
                 try
 
                     % Default packet size for HID
                     intid = java.lang.Integer(idOfCommand);
-                    ret = 	packet.myHIDSimplePacketComs.readFloats(intid) ;
+                    ret = 	self.myHIDSimplePacketComs.readFloats(intid) ;
                     for i=1:length(com)
                        com(i)= ret(i).floatValue();
                     end
@@ -60,7 +60,7 @@ classdef Robot < handle
                 end
         end
         
-        function  write(packet, idOfCommand, values)
+        function  write(self, idOfCommand, values)
                 try
                     ds = javaArray('java.lang.Double',length(values));
                     for i=1:length(values)
@@ -68,7 +68,7 @@ classdef Robot < handle
                     end
                     % Default packet size for HID
                     intid = java.lang.Integer(idOfCommand);
-                    packet.myHIDSimplePacketComs.writeFloats(intid,  ds,packet.pol);
+                    self.myHIDSimplePacketComs.writeFloats(intid,  ds,self.pol);
 
                 catch exception
                     getReport(exception)
@@ -77,12 +77,12 @@ classdef Robot < handle
         end
         
         % Specifies a position to the gripper
-        function writeGripper(packet, value)
+        function writeGripper(self, value)
             try
                 ds = javaArray('java.lang.Byte',length(1));
                 ds(1)= java.lang.Byte(value);
-                intid = java.lang.Integer(packet.GRIPPER_ID);
-                packet.myHIDSimplePacketComs.writeBytes(intid, ds, packet.pol);
+                intid = java.lang.Integer(self.GRIPPER_ID);
+                self.myHIDSimplePacketComs.writeBytes(intid, ds, self.pol);
             catch exception
                 getReport(exception)
                 disp('Command error, reading too fast');
@@ -90,13 +90,13 @@ classdef Robot < handle
         end
         
         % Opens the gripper
-        function openGripper(packet)
-            packet.writeGripper(180);
+        function openGripper(self)
+            self.writeGripper(180);
         end
         
         % Closes the gripper
-        function closeGripper(packet)
-            packet.writeGripper(0);
+        function closeGripper(self)
+            self.writeGripper(0);
         end
         
     end
