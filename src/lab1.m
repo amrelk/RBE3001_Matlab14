@@ -36,7 +36,7 @@ myHIDSimplePacketComs.setVid(vid);
 myHIDSimplePacketComs.connect();
 
 % Create a PacketProcessor object to send data to the nucleo firmware
-pp = Robot(myHIDSimplePacketComs); 
+robot = Robot(myHIDSimplePacketComs); 
 try
   SERV_ID = 1848;            % we will be talking to server ID 1848 on
                            % the Nucleo
@@ -63,10 +63,10 @@ try
       packet(5) = 0;% Third link to 0
 
       % Send packet to the server and get the response      
-      %pp.write sends a 15 float packet to the micro controller
-       pp.write(SERV_ID, packet); 
-       %pp.read reads a returned 15 float backet from the micro controller.
-       returnPacket = pp.read(SERVER_ID_READ);
+      %robot.write sends a 15 float packet to the micro controller
+       robot.write(SERV_ID, packet); 
+       %robot.read reads a returned 15 float backet from the micro controller.
+       returnPacket = robot.read(SERVER_ID_READ);
       toc
 
       if DEBUG
@@ -82,9 +82,9 @@ try
   end
   
   % Closes then opens the gripper
-  pp.closeGripper()
+  robot.closeGripper()
   pause(1)
-  pp.openGripper()
+  robot.openGripper()
   
 catch exception
     getReport(exception)
@@ -92,6 +92,6 @@ catch exception
 end
 
 % Clear up memory upon termination
-pp.shutdown()
+robot.shutdown()
 
 toc
