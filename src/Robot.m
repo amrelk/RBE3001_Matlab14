@@ -7,6 +7,10 @@ classdef Robot < handle
     end
     
     methods
+
+        function interpolate_jp(joints, time)
+            write(1848, [time 0 joints]);
+        end
         
         %The is a shutdown function to clear the HID hardware connection
         function  shutdown(self)
