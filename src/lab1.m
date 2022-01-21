@@ -45,7 +45,7 @@ try
 
   % Instantiate a packet - the following instruction allocates 60
   % bytes for this purpose. Recall that the HID interface supports
-  % packet sizes up to 64 bytes.
+  % packet sizes up to 64 bytes
   packet = zeros(15, 1, 'single');
 
   % The following code generates a sinusoidal trajectory to be
@@ -85,10 +85,10 @@ try
   robot.closeGripper()
   pause(1)
   robot.openGripper()
-  
-catch exception
-    getReport(exception)
-    disp('Exited on error, clean shutdown');
+
+    catch exception
+        getReport(exception)
+        disp('Exited on error, clean shutdown');
 end
 
 % Clear up memory upon termination
