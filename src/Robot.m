@@ -5,36 +5,27 @@ classdef Robot < handle
         pol; 
         GRIPPER_ID = 1962
         SERV_ID = 1848;            % we will be talking to server ID 1848 on the Nucleo
+        joint1 = 0;
+        joint2 = 0;
+        joint3 = 0;
     end
     
-    methods
-
-        function interpolate_jp(joints, time)
-            write(1848, [time 0 joints]);
+    methods        
+        function x = goal_js(self)
+            x = [self.joint1 self.joint2 self.joint3];
         end
         
-        %Set joint positions
-        function servo_jp(self, jointValues)
-            DEBUG   = true;          % enables/disables debug prints
-            
-            % Instantiate a packet
-            packet = zeros(15, 1, 'single');
-            packet(1) = 1000;%one second time
-            packet(2) = 0;%linear interpolation
-            packet(3) = jointValues(1);
-            packet(4) = jointValues(2);
-            packet(5) = jointValues(3);
-
-            % Send packet to the server and get the response      
-            %robot.write sends a 15 float packet to the micro controller
-            self.write(self.SERV_ID, packet); 
-            
-            if DEBUG
-                disp('Sent Packet:')
-                disp(packet);
-                disp('Received Packet:');
-                disp(returnPacket);
-            end
+        %Set joint positions with interpolation
+        function interpolate_jp(joints, time, self)
+            self.joint1 = joints(1);
+            self.joint2 = joints(2);
+            self.joint3 = joints(3);
+            self.write(1848, [time 0 joints]);
+        end
+        
+        %Set joint positions without interpolation
+        function servo_jp(self, joints)
+            self.interpolate_jp(joints, 0)
         end
        
         %The is a shutdown function to clear the HID hardware connection
