@@ -28,27 +28,8 @@ classdef Robot < handle
         end
         
         %Set joint positions
-        function servo_jp(self, jointValues)
-            DEBUG   = true;          % enables/disables debug prints
-            
-            % Instantiate a packet
-            packet = zeros(15, 1, 'single');
-            packet(1) = 1000;%one second time
-            packet(2) = 0;%linear interpolation
-            packet(3) = jointValues(1);
-            packet(4) = jointValues(2);
-            packet(5) = jointValues(3);
-
-            % Send packet to the server and get the response      
-            %robot.write sends a 15 float packet to the micro controller
-            self.write(self.SERV_ID, packet); 
-            
-            if DEBUG
-                disp('Sent Packet:')
-                disp(packet);
-                disp('Received Packet:');
-                disp(returnPacket);
-            end
+        function servo_jp(self, joints)
+            self.interpolate_jp(joints, 0);
         end
        
         %The is a shutdown function to clear the HID hardware connection
