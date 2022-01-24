@@ -22,6 +22,11 @@ classdef Robot < handle
             end
             x = [pos;vel];
         end
+        
+        function x = setpoint_js(self)
+            x = self.read(1910);
+            x = x([2 4 6]);
+        end
 
         function interpolate_jp(self, joints, time)
             self.write(1848, [time 0 joints]);
