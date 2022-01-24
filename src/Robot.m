@@ -16,7 +16,7 @@ classdef Robot < handle
         end
         
         %Set joint positions with interpolation
-        function interpolate_jp(joints, time, self)
+        function interpolate_jp(self, joints, time)
             self.joint1 = joints(1);
             self.joint2 = joints(2);
             self.joint3 = joints(3);
@@ -25,7 +25,7 @@ classdef Robot < handle
         
         %Set joint positions without interpolation
         function servo_jp(self, joints)
-            self.interpolate_jp(joints, 0)
+            self.interpolate_jp(joints, 0);
         end
        
         %The is a shutdown function to clear the HID hardware connection
