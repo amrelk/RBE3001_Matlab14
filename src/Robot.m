@@ -36,6 +36,11 @@ classdef Robot < handle
             end
             x = [pos;vel];
         end
+       
+        function x = setpoint_js(self)
+            x = self.read(1910);
+            x = x([2 4 6]);
+        end
         
         function servo_jp(self, joints)
             self.interpolate_jp(joints, 0);
