@@ -8,6 +8,20 @@ classdef Robot < handle
     end
     
     methods
+        
+        function x = measured_js(self, getpos, getvel)
+            pos = [0 0 0];
+            vel = [0 0 0];
+            if getpos
+                pos = self.read(1910);
+                pos = pos([3 5 7])';
+            end
+            if getvel
+                vel = self.read(1822);
+                vel = vel([3 6 9])';
+            end
+            x = [pos;vel];
+        end
 
         function interpolate_jp(joints, time)
             write(1848, [time 0 joints]);
