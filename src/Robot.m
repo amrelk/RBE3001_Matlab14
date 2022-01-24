@@ -23,8 +23,8 @@ classdef Robot < handle
             x = [pos;vel];
         end
 
-        function interpolate_jp(joints, time)
-            write(1848, [time 0 joints]);
+        function interpolate_jp(self, joints, time)
+            self.write(1848, [time 0 joints]);
         end
         
         %Set joint positions
