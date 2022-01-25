@@ -1,27 +1,13 @@
 %%
 % RBE3001 - Laboratory 1 
-% 
-% Instructions
-% ------------
-% Welcome again! This MATLAB script is your starting point for Lab
-% 1 of RBE3001. The sample code below demonstrates how to establish
-% communication between this script and the Nucleo firmware, send
-% setpoint commands and receive sensor data.
-% 
-% IMPORTANT - understanding the code below requires being familiar
-% with the Nucleo firmware. Read that code first.
+%
 
-% Lines 15-37 perform necessary library initializations. You can skip reading
-% to line 38.
 clear
 clear java
 clear classes;
 
 vid = hex2dec('16c0');
 pid = hex2dec('0486');
-
-disp (vid);
-disp (pid);
 
 javaaddpath ../lib/SimplePacketComsJavaFat-0.6.4.jar;
 import edu.wpi.SimplePacketComs.*;
@@ -38,25 +24,19 @@ myHIDSimplePacketComs.connect();
 % Create a PacketProcessor object to send data to the nucleo firmware
 robot = Robot(myHIDSimplePacketComs); 
 try
-  measured_values = [];
-  times = [];
-  viaPts = [45,0];
+    measured_values = [];
+    times = [];
+    viaPts = [45,0];
   
-  tstart = tic;
-  for k = viaPts
-    robot.interpolate_jp([k 0 0], 3000);
-    while toc(tstart) < 4
-      measured = robot.measured_js(1,0);
-      measured_values = [measured_values; measured(1, :)];
-      times = [times; 1000*toc(tstart)];
+    tstart = tic;
+    for k = viaPts
+        robot.interpolate_jp([k 0 0], 2000);
+        while ~robot.at_goal_js()
+            measured = robot.measured_js(1,0);
+            measured_values = [measured_values; measured(1, :)]; %#ok<*AGROW>
+            times = [times; 1000*toc(tstart)];
+        end
     end
-  end
-  
-  % Closes then opens the gripper
-  robot.closeGripper()
-  pause(1)
-  robot.openGripper()
-
     catch exception
         getReport(exception)
         disp('Exited on error, clean shutdown');
