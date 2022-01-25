@@ -5,21 +5,17 @@ classdef Robot < handle
         pol; 
         GRIPPER_ID = 1962
         SERV_ID = 1848;            % we will be talking to server ID 1848 on the Nucleo
-        joint1 = 0;
-        joint2 = 0;
-        joint3 = 0;
+        joints = [0 0 0];
     end
     
     methods        
         function x = goal_js(self)
-            x = [self.joint1 self.joint2 self.joint3];
+            x = self.joints;
         end
         
         %Set joint positions with interpolation
         function interpolate_jp(self, joints, time)
-            self.joint1 = joints(1);
-            self.joint2 = joints(2);
-            self.joint3 = joints(3);
+            self.joints = joints;
             self.write(1848, [time 0 joints]);
         end
         
