@@ -12,7 +12,7 @@ classdef Robot < handle
         function x = at_goal_js(self)
             pos = self.measured_js(1,0);
             pos = pos(1,:);
-            x = isequal(abs(pos - self.goal_js()) <= 1, [1 1 1]);
+            x = isequal(abs(pos - self.goal_js()) <= 2, [1 1 1]);
         end
         
         function x = goal_js(self)
