@@ -14,12 +14,21 @@ classdef Kinematics
                 T = T * self.dh2mat(dh(k, :));
             end
         end
+        function T = fk3001_inter(self, q, j)
+            dh = [ ...
+                0 self.L(1) 0 0; ...         % 0-1
+                q(1) self.L(2) 0 -pi/2; ...  % 1-2
+                q(2)-pi/2 0 self.L(3) 0; ... % 2-3
+                q(3)+pi/2 0 self.L(4) 0 ...  % 3-4
+                ];
+            T = self.dh2fk(dh(1:j, :));
+        end
         function T = fk3001(self, q)
             T = self.dh2fk([ ...
-                0 self.L(1) 0 0; ...
-                q(1)-pi/2 self.L(2) 0 -pi/2; ...
-                q(2) 0 self.L(3) 0; ...
-                q(3)+pi/2 0 self.L(4) 0 ...
+                0 self.L(1) 0 0; ...         % 0-1
+                q(1) self.L(2) 0 -pi/2; ...  % 1-2
+                q(2)-pi/2 0 self.L(3) 0; ... % 2-3
+                q(3)+pi/2 0 self.L(4) 0 ...  % 3-4
                 ]);
         end
     end
