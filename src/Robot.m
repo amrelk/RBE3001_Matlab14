@@ -6,6 +6,7 @@ classdef Robot < handle
         GRIPPER_ID = 1962
         SERV_ID = 1848;            % we will be talking to server ID 1848 on the Nucleo
         joints = [0 0 0];
+        kine = Kinematics();
     end
     
     methods
@@ -17,6 +18,11 @@ classdef Robot < handle
         
         function x = goal_js(self)
             x = self.joints;
+        end
+        
+        function T = goal_cp(self)
+            q = self.goal_js();
+            T = self.kine.fk3001(q);
         end
         
         %Set joint positions with interpolation
@@ -38,10 +44,21 @@ classdef Robot < handle
             end
             x = [pos;vel];
         end
+        
+        function T = measured_cp(self)
+            q = self.measured_js(1, 0);
+            q = q(1, :);
+            T = self.kine.fk3001(q);
+        end
        
         function x = setpoint_js(self)
             x = self.read(1910);
             x = x([2 4 6]);
+        end
+        
+        function T = setpoint_cp(self)
+            q = self.setpoint_js();
+            T = self.kine.fk3001(q);
         end
         
         function servo_jp(self, joints)

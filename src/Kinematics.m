@@ -16,29 +16,27 @@ classdef Kinematics
         end
         function T = fk3001_inter(self, q, j)
             dh = [ ...
-                0 self.L(1) 0 0; ...         % 0-1
-                q(1) self.L(2) 0 -pi/2; ...  % 1-2
-                q(2)-pi/2 0 self.L(3) 0; ... % 2-3
-                q(3)+pi/2 0 self.L(4) 0 ...  % 3-4
+                0 self.L(1) 0 0; ...       % 0-1
+                q(1) self.L(2) 0 -90; ...  % 1-2
+                q(2)-90 0 self.L(3) 0; ... % 2-3
+                q(3)+90 0 self.L(4) 0 ...  % 3-4
                 ];
             T = self.dh2fk(dh(1:j, :));
         end
-        function T = fk3001(self, q)
-            T = self.dh2fk([ ...
-                0 self.L(1) 0 0; ...         % 0-1
-                q(1) self.L(2) 0 -pi/2; ...  % 1-2
-                q(2)-pi/2 0 self.L(3) 0; ... % 2-3
-                q(3)+pi/2 0 self.L(4) 0 ...  % 3-4
-                ]);
+        function T = fk3001(~, q)
+            T = [ cosd(q(1))*cosd(q(2) - 90)*cosd(q(3) + 90) - cosd(q(1))*sind(q(2) - 90)*sind(q(3) + 90), - cosd(q(1))*cosd(q(2) - 90)*sind(q(3) + 90) - cosd(q(1))*cosd(q(3) + 90)*sind(q(2) - 90), -sind(q(1)), 100*cosd(q(1))*cosd(q(2) - 90) + 100*cosd(q(1))*cosd(q(2) - 90)*cosd(q(3) + 90) - 100*cosd(q(1))*sind(q(2) - 90)*sind(q(3) + 90);
+                  sind(q(1))*cosd(q(2) - 90)*cosd(q(3) + 90) - sind(q(1))*sind(q(2) - 90)*sind(q(3) + 90), - sind(q(1))*cosd(q(2) - 90)*sind(q(3) + 90) - sind(q(1))*cosd(q(3) + 90)*sind(q(2) - 90), cosd(q(1)), 100*sind(q(1))*cosd(q(2) - 90) + 100*sind(q(1))*cosd(q(2) - 90)*cosd(q(3) + 90) - 100*sind(q(1))*sind(q(2) - 90)*sind(q(3) + 90);
+                  - cosd(q(2) - 90)*sind(q(3) + 90) - cosd(q(3) + 90)*sind(q(2) - 90), sind(q(2) - 90)*sind(q(3) + 90) - cosd(q(2) - 90)*cosd(q(3) + 90), 0, 95 - 100*cosd(q(2) - 90)*sind(q(3) + 90) - 100*cosd(q(3) + 90)*sind(q(2) - 90) - 100*sind(q(2) - 90);
+                  0, 0, 0, 1];
         end
     end
     methods(Static)
         function T = trotx(theta)
-            T = [1 0 0 0; 0 cos(theta) -sin(theta) 0; 0 sin(theta) cos(theta) 0; 0 0 0 1];
+            T = [1 0 0 0; 0 cosd(theta) -sind(theta) 0; 0 sind(theta) cosd(theta) 0; 0 0 0 1];
         end
 
         function T = trotz(theta)
-            T = [cos(theta) -sin(theta) 0 0; sin(theta) cos(theta) 0 0; 0 0 1 0; 0 0 0 1];
+            T = [cosd(theta) -sind(theta) 0 0; sind(theta) cosd(theta) 0 0; 0 0 1 0; 0 0 0 1];
         end
 
         function T = ttransz(d)
