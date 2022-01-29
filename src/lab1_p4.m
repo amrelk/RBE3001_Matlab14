@@ -66,6 +66,7 @@ plot(times, j1values);
 title("Joint 1 Position vs. Time for 45 Degree Turn");
 xlabel("Time (ms)");
 ylabel("Joint Position (degrees)");
+legend(["Trial 1", "Trial 2", "Trial 3"], "Location", "southeast");
 subplot(3, 1, 2);
 plot(times, j2values);
 title("Joint 2 Position vs. Time for 45 Degree Turn");
