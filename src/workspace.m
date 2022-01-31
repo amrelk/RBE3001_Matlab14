@@ -1,11 +1,11 @@
 kine = Kinematics();
 
-t = zeros(71540, 3);
+t = zeros(80000, 3);
 n = 1;
 
-for q1 = -180:5:180
-    for q2 = -85:5:85
-        for q3 = -50:5:85
+for q1 = linspace(-180, 180, 50)
+    for q2 = linspace(-50, 98, 40)
+        for q3 = linspace(-105, 74, 40)
             T = kine.fk3001([q1 q2 q3]);
             t(n, :) = T(1:3, 4);
             n = n+1;
@@ -13,6 +13,6 @@ for q1 = -180:5:180
     end
 end
 
-k = boundary(t, 0);
+k = boundary(t, 1);
 trisurf(k,t(:,1),t(:,2),t(:,3),'FaceColor','red','FaceAlpha',1);
 axis equal;

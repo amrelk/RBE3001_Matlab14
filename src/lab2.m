@@ -16,5 +16,5 @@ while 1
         q = robot.measured_js(1, 0);
         model.plot_arm(q(1,:));
     end
-    pause(0.025);
+    pause(0.05);
 end
