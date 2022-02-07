@@ -24,6 +24,10 @@ classdef Robot < handle
             q = self.goal_js();
             T = self.kine.fk3001(q);
         end
+
+        function servo_cp(self, p)
+            self.servo_jp(self.kine.ik3001(p));
+        end
         
         %Set joint positions with interpolation
         function interpolate_jp(self, joints, time)
