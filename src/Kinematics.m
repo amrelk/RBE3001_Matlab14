@@ -3,6 +3,23 @@ classdef Kinematics
         L = [55 40 100 100];
     end
     methods
+        function q = ik3001(self, p)
+            q = zeros(1, 3);
+            xc = p(1);
+            yc = p(2);
+            zc = p(3);
+            s = zc - (self.L(1) + self.L(2));
+            r = sqrt(xc^2+yc^2);
+            q(1) = atan2d(sign(yc)*sqrt(1-(xc/r)^2), xc/r);
+            D = (self.L(3)^2 + self.L(4)^2 - (r^2 + s^2))/(2*self.L(3)*self.L(4));
+            q(3) = 90 - atan2d(sqrt(1-D^2), D);
+            b = r/sqrt(r^2+s^2);
+            a = (self.L(3)^2 + r^2 + s^2 - self.L(4)^2)/(2*self.L(3)*sqrt(r^2+s^2));
+            q(2) = 90 - atan2d(sqrt(1-a^2), a) - atan2d(sign(s)*sqrt(1-b^2), b);
+            if (abs(q(1)) > 90) || (q(2) > 95) || (q(2) < -45) || (q(3) > 60) || (q(3) < -90)
+                error('not in acceptable joint space!');
+            end
+        end
         function T = dh2mat(self, dh)
             T = self.trotz(dh(1)) * self.ttransz(dh(2)) * self.ttransx(dh(3)) * self.trotx(dh(4));
         end
