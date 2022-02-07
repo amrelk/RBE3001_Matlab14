@@ -9,7 +9,7 @@ classdef Traj_Planner
                v0;
                p1;
                v1];
-            A=M\Q;
+            A=flip(M\Q);
         end
     end
 
