@@ -10,6 +10,28 @@ classdef Robot < handle
     end
     
     methods
+        function Q = run_trajectory(self, coeff, time, joint)
+            Q = [];
+            tstart = tic;
+            if nargin == 3 || ~joint
+                while toc(tstart) <= time
+                    self.servo_cp([polyval(coeff(1, :),toc(tstart)) ...
+                                   polyval(coeff(2, :), toc(tstart)) ...
+                                   polyval(coeff(3, :), toc(tstart))]);
+                    Q = [Q; toc(tstart) self.measured_js()];
+                    pause(0.04);
+                end
+            elseif joint
+                while toc(tstart) <= time
+                    self.servo_jp([polyval(coeff(1, :),toc(tstart)) ...
+                                   polyval(coeff(2, :), toc(tstart)) ...
+                                   polyval(coeff(3, :), toc(tstart))]);
+                    Q = [Q; toc(tstart) self.measured_js()];
+                    pause(0.04);
+                end
+            end
+        end
+
         function x = at_goal_js(self)
             pos = self.measured_js(1,0);
             pos = pos(1,:);
@@ -28,6 +50,10 @@ classdef Robot < handle
         function servo_cp(self, p)
             self.servo_jp(self.kine.ik3001(p));
         end
+
+        function interpolate_cp(self, p, time)
+            self.interpolate_jp(self.kine.ik3001(p), time);
+        end
         
         %Set joint positions with interpolation
         function interpolate_jp(self, joints, time)
@@ -38,21 +64,28 @@ classdef Robot < handle
         function x = measured_js(self, getpos, getvel)
             pos = [0 0 0];
             vel = [0 0 0];
-            if getpos
+            if nargin == 1 || getpos
                 pos = self.read(1910);
                 pos = pos([3 5 7])';
             end
-            if getvel
+            if nargin ~= 1 && getvel
                 vel = self.read(1822);
                 vel = vel([3 6 9])';
             end
-            x = [pos;vel];
+            if nargin == 1
+                x = pos;
+            else
+                x = [pos;vel];
+            end
         end
         
-        function T = measured_cp(self)
+        function T = measured_cp(self, pos)
             q = self.measured_js(1, 0);
             q = q(1, :);
             T = self.kine.fk3001(q);
+            if nargin >= 2 && pos
+                T = T(1:3, 4)';
+            end
         end
        
         function x = setpoint_js(self)
