@@ -5,7 +5,7 @@ classdef Model
     end
    
     methods
-        function plot_arm(self, q)
+        function plot_arm(self, q, qdot)
             tic;
             t{1} = eye(4);
             t{2} = self.kine.fk3001_inter(q, 1);
@@ -21,12 +21,10 @@ classdef Model
             grid on;
             hold on;
             axisColors = ['r', 'b', 'g'];
-            x = [];
-            y = [];
-            z = [];
-            u = [];
-            v = [];
-            w = [];
+            if nargin > 2
+                pdot = self.kine.fdk3001(q, qdot);
+                line([Q(1, 5) Q(1, 5)+pdot(1)], [Q(2, 5) Q(2, 5)+pdot(2)], [Q(3, 5) Q(3, 5)+pdot(3)], 'Color', 'k', 'LineWidth', 1.5);
+            end
             for k = 1:5
                 for a = 1:3
                     ta = [t{k}(1:3, 4)' ; t{k}(1:3, 4)' + 40*t{k}(1:3, a)'];
@@ -35,7 +33,11 @@ classdef Model
                     p.LineWidth = 2;
                 end
             end
-            legend('arm', 'x', 'y', 'z');
+            if nargin > 2
+                legend('arm', 'velocity', 'x', 'y', 'z');
+            else
+                legend('arm', 'x', 'y', 'z');
+            end
             hold off;
             title('3D Stick Model')
             xlabel('X Axis');

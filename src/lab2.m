@@ -13,8 +13,8 @@ while 1
             n = 1;
         end
     else
-        q = robot.measured_js(1, 0);
-        model.plot_arm(q(1,:));
+        q = robot.measured_js(1, 1);
+        model.plot_arm(q(1, :), q(2, :));
     end
     pause(0.05);
 end

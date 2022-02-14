@@ -3,6 +3,28 @@ classdef Kinematics
         L = [55 40 100 100];
     end
     methods
+        function J = jacob3001(self, q)
+            J = zeros(6, 3);
+            pe = self.fk3001(q);
+            pe = pe(1:3, 4);
+            for i = 1:3
+                Ti = self.fk3001_inter(q, i);
+                zi = Ti(1:3, 3);
+                pi = Ti(1:3, 4);
+                J(:, i) = [cross(zi, pe - pi); zi];
+            end
+        end
+
+        function pdot = fdk3001(self, q, qdot)
+            if nargin == 2
+                qdot = q(2, :);
+                q = q(1, :);
+            end
+            J = self.jacob3001(q);
+            qdot = deg2rad(qdot)';
+            pdot = J*qdot;
+        end
+
         function q = ik3001(self, p)
             q = zeros(1, 3);
             xc = p(1);

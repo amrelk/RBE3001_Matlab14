@@ -10,13 +10,15 @@ while ~robot.at_goal_js()
     pause(0.1);
 end
 tstart = tic;
+len = 0;
 for n = 2:length(targets)
     traj = [planner.quintic_traj(targets(n-1, 1), targets(n, 1), 0, 0, 0, 0, 0, 1)';
             planner.quintic_traj(targets(n-1, 2), targets(n, 2), 0, 0, 0, 0, 0, 1)';
             planner.quintic_traj(targets(n-1, 3), targets(n, 3), 0, 0, 0, 0, 0, 1)'];
     Q = robot.run_trajectory(traj, 1);
+    jank = [jank; repmat([Q(end, 1)+len 0 0 0], length(Q), 1)];
+    len = Q(end, 1) + len;
     q = [q; Q];
-    jank = [jank; repmat([n-2 0 0 0], length(Q), 1)];
 end
 q = q+jank;
 

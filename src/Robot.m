@@ -10,16 +10,28 @@ classdef Robot < handle
     end
     
     methods
-        function Q = run_trajectory(self, coeff, time, joint)
+        function Q = run_trajectory(self, coeff, time, joint, tstart)
             Q = [];
-            tstart = tic;
-            if nargin == 3 || ~joint
-                while toc(tstart) <= time
-                    self.servo_cp([polyval(coeff(1, :),toc(tstart)) ...
-                                   polyval(coeff(2, :), toc(tstart)) ...
-                                   polyval(coeff(3, :), toc(tstart))]);
-                    Q = [Q; toc(tstart) self.measured_js()];
-                    pause(0.04);
+            if nargin < 5
+                tstart = tic;
+            end
+            ststart = tic;
+            if nargin < 4 || ~joint
+                while toc(ststart) <= time
+                    self.servo_cp([polyval(coeff(1, :),toc(ststart)) ...
+                                   polyval(coeff(2, :), toc(ststart)) ...
+                                   polyval(coeff(3, :), toc(ststart))]);
+                    js = self.measured_js(1, 1);
+%                     if nargin > 4
+%                         model.plot_arm(js(1, :), js(2, :));
+%                     end
+                    J = self.kine.jacob3001(js(1, :));
+                    pdot = J * deg2rad(js(2, :))';
+                    Q = [Q; toc(tstart) pdot'];
+                    if det(J(1:3, 1:3)) < 5e+5
+                        error('you got too close to a singularity!!');
+                    end
+                    pause(0.01);
                 end
             elseif joint
                 while toc(tstart) <= time
