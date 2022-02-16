@@ -17,6 +17,7 @@ classdef Robot < handle
             end
             ststart = tic;
             if nargin < 4 || ~joint
+                toc(tstart)
                 while toc(ststart) <= time
                     self.servo_cp([polyval(coeff(1, :),toc(ststart)) ...
                                    polyval(coeff(2, :), toc(ststart)) ...
@@ -27,12 +28,14 @@ classdef Robot < handle
 %                     end
                     J = self.kine.jacob3001(js(1, :));
                     pdot = J * deg2rad(js(2, :))';
-                    Q = [Q; toc(tstart) pdot'];
-                    if det(J(1:3, 1:3)) < 5e+5
+                    Q = [Q; toc(tstart) js(1, :) 0 0 0 det(J(1:3, 1:3))]% pdot'];
+                    if det(J(1:3, 1:3)) < 5e+2
+                        return;
                         error('you got too close to a singularity!!');
                     end
                     pause(0.01);
                 end
+                toc(tstart)
             elseif joint
                 while toc(tstart) <= time
                     self.servo_jp([polyval(coeff(1, :),toc(tstart)) ...
