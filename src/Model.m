@@ -15,7 +15,7 @@ classdef Model
             Q = [t{1}(1, 4) t{2}(1, 4) t{3}(1, 4) t{4}(1, 4) t{5}(1, 4);
                  t{1}(2, 4) t{2}(2, 4) t{3}(2, 4) t{4}(2, 4) t{5}(2, 4);
                  t{1}(3, 4) t{2}(3, 4) t{3}(3, 4) t{4}(3, 4) t{5}(3, 4)];
-            plot3(Q(1,:), Q(2,:), Q(3,:), '-o', 'LineWidth', 3, 'MarkerSize', 6, 'MarkerFaceColor', [0.5,0.5,0.5]);
+            plot3(Q(1,:), Q(2,:), Q(3,:), '-o', 'LineWidth', 3, 'MarkerSize', 6, 'Color', [0, 0.4470, 0.7410], 'MarkerFaceColor', [0.5,0.5,0.5]);
             axis([-200 200 -200 200 0 400]);
             pbaspect([1 1 1]);
             grid on;
@@ -38,7 +38,7 @@ classdef Model
             else
                 legend('arm', 'x', 'y', 'z');
             end
-            hold off;
+            %hold off;
             title('3D Stick Model')
             xlabel('X Axis');
             ylabel('Y Axis');

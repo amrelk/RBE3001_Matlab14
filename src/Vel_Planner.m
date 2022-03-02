@@ -1,16 +1,16 @@
 classdef Vel_Planner
     methods
         function A = inv_velkine(self, p0, p1, J, prop)
-            U=[p1(1)-p0(1);
-                p1(2)-p0(2);
-                p1(3)-p0(3)];
+            U=[p1(1) - p0(1);
+               p1(2) - p0(2);
+               p1(3) - p0(3)];
             if nargin > 4 && prop
-                X=U*10;
+                X = U*10;
             else
-                X=(U/norm(U))*300;
+                X = (U/norm(U))*300;
             end
-            Jp=J(1:3,:);
-            A=Jp\X;
+            Jp = J(1:3,:);
+            A = Jp\X;
         end
 
         function q = ik3001_numeric(self, p, model)

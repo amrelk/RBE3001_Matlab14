@@ -28,7 +28,7 @@ classdef Robot < handle
 %                     end
                     J = self.kine.jacob3001(js(1, :));
                     pdot = J * deg2rad(js(2, :))';
-                    Q = [Q; toc(tstart) js(1, :) 0 0 0 det(J(1:3, 1:3))]% pdot'];
+                    Q = [Q; toc(tstart) js(1, :) 0 0 0 det(J(1:3, 1:3))];% pdot'];
                     if det(J(1:3, 1:3)) < 5e+2
                         return;
                         error('you got too close to a singularity!!');
@@ -62,8 +62,8 @@ classdef Robot < handle
             T = self.kine.fk3001(q);
         end
 
-        function servo_cp(self, p)
-            self.servo_jp(self.kine.ik3001(p));
+        function servo_cp(self, p, adjusted)
+            self.servo_jp(self.kine.ik3001(p, (nargin > 2 && adjusted)));
         end
 
         function interpolate_cp(self, p, time)

@@ -25,7 +25,7 @@ classdef Kinematics
             pdot = J*qdot;
         end
 
-        function q = ik3001(self, p)
+        function q = ik3001(self, p, adjusted)
             q = zeros(1, 3);
             xc = p(1);
             yc = p(2);
@@ -38,6 +38,9 @@ classdef Kinematics
             b = r/sqrt(r^2+s^2);
             a = (self.L(3)^2 + r^2 + s^2 - self.L(4)^2)/(2*self.L(3)*sqrt(r^2+s^2));
             q(2) = 90 - atan2d(sqrt(1-a^2), a) - atan2d(sign(s)*sqrt(1-b^2), b);
+            if nargin > 2 && adjusted
+                q(1) = q(1) - 5;
+            end
             if (abs(q(1)) > 90) || (q(2) > 95) || (q(2) < -45) || (q(3) > 60) || (q(3) < -90)
                 error('not in acceptable joint space!');
             end
