@@ -74,14 +74,16 @@ classdef Camera < handle
             % 2. Undistort Image based on params
             [img, newIs] = undistortFisheyeImage(raw_img, self.params.Intrinsics, 'OutputView', 'full');
             % 3. Detect checkerboard in the image
-%             [imagePoints, boardSize] = detectCheckerboardPoints(img, 'PartialDetections', false);
-%             % 4. Compute transformation
-%             self.params.WorldPoints = self.params.WorldPoints(self.params.WorldPoints(:, 2) <= (boardSize(1)-2)*25, :);
-%             disp(boardSize);
-%             [R, t] = extrinsics(imagePoints, self.params.WorldPoints, newIs);
-            load("cam_pose.mat", "pose");
-%             pose = [   R,    t';
-%                     0, 0, 0, 1];
+            [imagePoints, boardSize] = detectCheckerboardPoints(img, 'PartialDetections', false);
+            % 4. Compute transformation
+            self.params.WorldPoints = self.params.WorldPoints(self.params.WorldPoints(:, 2) <= (boardSize(1)-1)*25, :);
+            disp(self.params.WorldPoints);
+            disp(boardSize);
+            % 4. Compute transformation
+            [R, t] = extrinsics(imagePoints, self.params.WorldPoints, newIs);
+            
+            pose = [   R,    t';
+                    0, 0, 0, 1];
         end
     end
 end
