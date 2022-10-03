@@ -1,4 +1,8 @@
-T_0_check = [0 1 0 100; 1 0 0 -50; 0 0 -1 0; 0 0 0 1];
+% T_0_check = [0 1 0 92; 1 0 0 -92; 0 0 -1 0; 0 0 0 1];
+R = [0 1 0;1 0 0;0 0 -1];
+T_0_check = [R, [92; -75; 0];zeros(1,3), 1]; % 22
+% T_0_check = [R, [100; -55; 0];zeros(1,3), 1]; % 27
+
 planner = Traj_Planner;
 while true
     img = mask_checker(cam.getImage, cam); % get checkerboard image
